@@ -12,30 +12,15 @@ e = directory "#{node["ohai"]["hints_path"]}" do
 end
 e.run_action(:create)
 
-f = cookbook_file "#{node["ohai"]["hints_path"]}/azure.json" do
-    source "azure.json"
-    action :nothing
-    not_if {File.exists?("#{node["ohai"]["hints_path"]}/azure.json")}
-end
-f.run_action(:create)
+%w{
+  azure.json ec2.json gce.json rackspace.json
+}.each do |file_name|
+  i = cookbook_file "#{node["ohai"]["hints_path"]}/#{file_name}" do
+        source "#{file_name}"
+        action :nothing
+        not_if {File.exists?("#{node["ohai"]["hints_path"]}/#{file_name}")}
+      end
 
-g = cookbook_file "#{node["ohai"]["hints_path"]}/ec2.json" do
-    source "ec2.json"
-    action :nothing
-    not_if {File.exists?("#{node["ohai"]["hints_path"]}/ec2.json")}
-end
-g.run_action(:create)
+  i.run_action(:create)
 
-h = cookbook_file "#{node["ohai"]["hints_path"]}/gce.json" do
-    source "gce.json"
-    action :nothing
-    not_if {File.exists?("#{node["ohai"]["hints_path"]}/gce.json")}
 end
-h.run_action(:create)
-
-i = cookbook_file "#{node["ohai"]["hints_path"]}/rackspace.json" do
-    source "rackspace.json"
-    action :nothing
-    not_if {File.exists?("#{node["ohai"]["hints_path"]}/rackspace.json")}
-end
-i.run_action(:create)
